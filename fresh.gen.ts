@@ -10,6 +10,7 @@ import * as $index from "./routes/index.tsx";
 import * as $Counter_story from "./islands/Counter.story.tsx";
 import * as $Counter from "./islands/Counter.tsx";
 import * as $InteractiveTable from "./islands/InteractiveTable.tsx";
+import * as $ItemList from "./islands/ItemList.tsx";
 import { type Manifest } from "$fresh/server.ts";
 
 const manifest = {
@@ -24,6 +25,7 @@ const manifest = {
     "./islands/Counter.story.tsx": $Counter_story,
     "./islands/Counter.tsx": $Counter,
     "./islands/InteractiveTable.tsx": $InteractiveTable,
+    "./islands/ItemList.tsx": $ItemList,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;

@@ -1,5 +1,6 @@
 import { useState } from "preact/hooks";
 import { Table } from "../components/Table.tsx";
+import { useItems } from "../hooks/useItems.ts";
 
 interface RowData {
   name: string;
@@ -30,6 +31,7 @@ const initialRows: RowData[] = [
 ];
 
 export default function InteractiveTable() {
+  const { items } = useItems();
   const [rows, setRows] = useState<RowData[]>(initialRows);
   const [errors, setErrors] = useState<boolean[][]>([]);
 

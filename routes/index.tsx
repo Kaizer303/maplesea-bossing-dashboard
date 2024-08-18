@@ -1,4 +1,4 @@
-import InteractiveTable from "../islands/InteractiveTable.tsx";
+import ItemList from "../islands/ItemList.tsx";
 
 export default function Home() {
   return (
@@ -18,7 +18,7 @@ export default function Home() {
         </div>
       </div>
       <div class="container mx-auto py-8">
-        <InteractiveTable />
+        <ItemList />
       </div>
     </div>
   );
