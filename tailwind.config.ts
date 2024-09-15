@@ -1,15 +1,22 @@
-import daisyui from "daisyui";
-import { type Config } from "tailwindcss";
-import { type PluginCreator } from "tailwindcss/types/config";
-
-const daisyuiPlugin = daisyui as unknown as PluginCreator;
+import type { Config } from "tailwindcss";
 
 export default {
-  content: [
-    "{routes,islands,components}/**/*.{ts,tsx}",
-  ],
-  plugins: [daisyuiPlugin],
-  daisyui: {
-    themes: ["dark"],
+  content: ["./app/**/{**,.client,.server}/**/*.{js,jsx,ts,tsx}"],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: [
+          '"Inter"',
+          "ui-sans-serif",
+          "system-ui",
+          "sans-serif",
+          '"Apple Color Emoji"',
+          '"Segoe UI Emoji"',
+          '"Segoe UI Symbol"',
+          '"Noto Color Emoji"',
+        ],
+      },
+    },
   },
+  plugins: [],
 } satisfies Config;
