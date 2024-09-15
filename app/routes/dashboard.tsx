@@ -1,35 +1,40 @@
-import React from "react";
 import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  Input,
   Button,
-  DropdownTrigger,
-  Dropdown,
-  DropdownMenu,
-  DropdownItem,
   Chip,
-  User,
+  ChipProps,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Image,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   Pagination,
   Selection,
-  ChipProps,
   SortDescriptor,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+  User,
 } from "@nextui-org/react";
-import {PlusIcon} from "../components/PlusIcon";
-import {VerticalDotsIcon} from "../components/VerticalDotIcon";
-import {ChevronDownIcon} from "../components/ChevronDownIcon";
-import {SearchIcon} from "../components/SearchIcon";
-import {columns, users as initialUsers, statusOptions} from "../../public/data";
-import {capitalize} from "../utils/capitalize";
+import React from "react";
+import {
+  columns,
+  statusOptions,
+  users as initialUsers,
+} from "../../public/data";
+import { ChevronDownIcon } from "../components/ChevronDownIcon";
+import { PlusIcon } from "../components/PlusIcon";
+import { SearchIcon } from "../components/SearchIcon";
+import { VerticalDotsIcon } from "../components/VerticalDotIcon";
+import { capitalize } from "../utils/capitalize";
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
   active: "success",
@@ -43,8 +48,12 @@ type User = typeof initialUsers[0];
 
 export default function Dashboard() {
   const [filterValue, setFilterValue] = React.useState("");
-  const [selectedKeys, setSelectedKeys] = React.useState<Selection>(new Set([]));
-  const [visibleColumns, setVisibleColumns] = React.useState<Selection>(new Set(INITIAL_VISIBLE_COLUMNS));
+  const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
+    new Set([]),
+  );
+  const [visibleColumns, setVisibleColumns] = React.useState<Selection>(
+    new Set(INITIAL_VISIBLE_COLUMNS),
+  );
   const [statusFilter, setStatusFilter] = React.useState<Selection>("all");
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [sortDescriptor, setSortDescriptor] = React.useState<SortDescriptor>({
@@ -52,7 +61,13 @@ export default function Dashboard() {
     direction: "ascending",
   });
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [newUser, setNewUser] = React.useState({ name: "", email: "", role: "", team: "", status: "active" });
+  const [newUser, setNewUser] = React.useState({
+    name: "",
+    email: "",
+    role: "",
+    team: "",
+    status: "active",
+  });
   const [users, setUsers] = React.useState(initialUsers);
 
   const [page, setPage] = React.useState(1);
@@ -71,7 +86,11 @@ export default function Dashboard() {
   };
 
   const handleSubmit = () => {
-    const updatedUsers = [...users, { ...newUser, id: users.length + 1, avatar: "https://example.com/avatar.jpg" }];
+    const updatedUsers = [...users, {
+      ...newUser,
+      id: users.length + 1,
+      avatar: "https://example.com/avatar.jpg",
+    }];
     setUsers(updatedUsers as User[]);
     handleCloseModal();
   };
@@ -81,7 +100,9 @@ export default function Dashboard() {
   const headerColumns = React.useMemo(() => {
     if (visibleColumns === "all") return columns;
 
-    return columns.filter((column) => Array.from(visibleColumns).includes(column.uid));
+    return columns.filter((column) =>
+      Array.from(visibleColumns).includes(column.uid)
+    );
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
@@ -89,12 +110,15 @@ export default function Dashboard() {
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
-        user.name.toLowerCase().includes(filterValue.toLowerCase()),
+        user.name.toLowerCase().includes(filterValue.toLowerCase())
       );
     }
-    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
+    if (
+      statusFilter !== "all" &&
+      Array.from(statusFilter).length !== statusOptions.length
+    ) {
       filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(user.status),
+        Array.from(statusFilter).includes(user.status)
       );
     }
 
@@ -127,7 +151,7 @@ export default function Dashboard() {
       case "name":
         return (
           <User
-            avatarProps={{radius: "lg", src: user.avatar}}
+            avatarProps={{ radius: "lg", src: user.avatar }}
             description={user.email}
             name={cellValue}
           >
@@ -138,12 +162,19 @@ export default function Dashboard() {
         return (
           <div className="flex flex-col">
             <p className="text-bold text-small capitalize">{cellValue}</p>
-            <p className="text-bold text-tiny capitalize text-default-400">{user.team}</p>
+            <p className="text-bold text-tiny capitalize text-default-400">
+              {user.team}
+            </p>
           </div>
         );
       case "status":
         return (
-          <Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
+          <Chip
+            className="capitalize"
+            color={statusColorMap[user.status]}
+            size="sm"
+            variant="flat"
+          >
             {cellValue}
           </Chip>
         );
@@ -181,10 +212,13 @@ export default function Dashboard() {
     }
   }, [page]);
 
-  const onRowsPerPageChange = React.useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
-    setRowsPerPage(Number(e.target.value));
-    setPage(1);
-  }, []);
+  const onRowsPerPageChange = React.useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      setRowsPerPage(Number(e.target.value));
+      setPage(1);
+    },
+    [],
+  );
 
   const onSearchChange = React.useCallback((value?: string) => {
     if (value) {
@@ -195,10 +229,10 @@ export default function Dashboard() {
     }
   }, []);
 
-  const onClear = React.useCallback(()=>{
-    setFilterValue("")
-    setPage(1)
-  },[])
+  const onClear = React.useCallback(() => {
+    setFilterValue("");
+    setPage(1);
+  }, []);
 
   const topContent = React.useMemo(() => {
     return (
@@ -216,7 +250,10 @@ export default function Dashboard() {
           <div className="flex gap-3">
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
-                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
+                <Button
+                  endContent={<ChevronDownIcon className="text-small" />}
+                  variant="flat"
+                >
                   Status
                 </Button>
               </DropdownTrigger>
@@ -237,7 +274,10 @@ export default function Dashboard() {
             </Dropdown>
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
-                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
+                <Button
+                  endContent={<ChevronDownIcon className="text-small" />}
+                  variant="flat"
+                >
                   Columns
                 </Button>
               </DropdownTrigger>
@@ -256,13 +296,19 @@ export default function Dashboard() {
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button color="primary" endContent={<PlusIcon />} onPress={handleAddNew}>
+            <Button
+              color="primary"
+              endContent={<PlusIcon />}
+              onPress={handleAddNew}
+            >
               Add New
             </Button>
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small">Total {users.length} users</span>
+          <span className="text-default-400 text-small">
+            Total {users.length} users
+          </span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
             <select
@@ -305,10 +351,20 @@ export default function Dashboard() {
           onChange={setPage}
         />
         <div className="hidden sm:flex w-[30%] justify-end gap-2">
-          <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onPreviousPage}>
+          <Button
+            isDisabled={pages === 1}
+            size="sm"
+            variant="flat"
+            onPress={onPreviousPage}
+          >
             Previous
           </Button>
-          <Button isDisabled={pages === 1} size="sm" variant="flat" onPress={onNextPage}>
+          <Button
+            isDisabled={pages === 1}
+            size="sm"
+            variant="flat"
+            onPress={onNextPage}
+          >
             Next
           </Button>
         </div>
@@ -317,90 +373,105 @@ export default function Dashboard() {
   }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
 
   return (
-    <div className="container mx-auto flex items-center justify-center h-screen">
-      <Table
-        aria-label="Example table with custom cells, pagination and sorting"
-        isHeaderSticky
-        bottomContent={bottomContent}
-        bottomContentPlacement="outside"
-        classNames={{
+    <div className="container mx-auto flex flex-col items-center justify-start min-h-screen py-8">
+      <div className="w-full max-w-2xl mb-8">
+        <Image
+          className="w-full mx-auto"
+          alt="Maple Logo"
+          src="/maple-logo.webp"
+        />
+      </div>
+      <h1 className="text-2xl font-bold mb-6">
+        Transaction Tracker Dashboard
+      </h1>
+      <div className="w-full max-w-6xl">
+        <Table
+          aria-label="Example table with custom cells, pagination and sorting"
+          isHeaderSticky
+          bottomContent={bottomContent}
+          bottomContentPlacement="outside"
+          classNames={{
             wrapper: "max-h-[382px]",
-        }}
-        selectedKeys={selectedKeys}
-        selectionMode="multiple"
-        sortDescriptor={sortDescriptor}
-        topContent={topContent}
-        topContentPlacement="outside"
-        onSelectionChange={setSelectedKeys}
-        onSortChange={setSortDescriptor}
-      >
-        <TableHeader columns={headerColumns}>
-          {(column) => (
-          <TableColumn
-            key={column.uid}
-            align={column.uid === "actions" ? "center" : "start"}
-            allowsSorting={column.sortable}
-          >
-            {column.name}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody emptyContent={"No users found"} items={sortedItems}>
-        {(item) => (
-          <TableRow key={item.id}>
-            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-          </TableRow>
-        )}
-      </TableBody>
-      </Table>
-      <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
-        <ModalContent>
-          <ModalHeader>Add New User</ModalHeader>
-          <ModalBody>
-            <Input
-              label="Name"
-              name="name"
-              value={newUser.name}
-              onChange={handleInputChange}
-            />
-            <Input
-              label="Email"
-              name="email"
-              value={newUser.email}
-              onChange={handleInputChange}
-            />
-            <Input
-              label="Role"
-              name="role"
-              value={newUser.role}
-              onChange={handleInputChange}
-            />
-            <Input
-              label="Team"
-              name="team"
-              value={newUser.team}
-              onChange={handleInputChange}
-            />
-            <select
-              name="status"
-              value={newUser.status}
-              onChange={(e) => setNewUser({ ...newUser, status: e.target.value })}
-            >
-              <option value="active">Active</option>
-              <option value="paused">Paused</option>
-              <option value="vacation">Vacation</option>
-            </select>
-          </ModalBody>
-          <ModalFooter>
-            <Button color="danger" variant="light" onPress={handleCloseModal}>
-              Cancel
-            </Button>
-            <Button color="primary" onPress={handleSubmit}>
-              Add User
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+          }}
+          selectedKeys={selectedKeys}
+          selectionMode="multiple"
+          sortDescriptor={sortDescriptor}
+          topContent={topContent}
+          topContentPlacement="outside"
+          onSelectionChange={setSelectedKeys}
+          onSortChange={setSortDescriptor}
+        >
+          <TableHeader columns={headerColumns}>
+            {(column) => (
+              <TableColumn
+                key={column.uid}
+                align={column.uid === "actions" ? "center" : "start"}
+                allowsSorting={column.sortable}
+              >
+                {column.name}
+              </TableColumn>
+            )}
+          </TableHeader>
+          <TableBody emptyContent={"No users found"} items={sortedItems}>
+            {(item) => (
+              <TableRow key={item.id}>
+                {(columnKey) => (
+                  <TableCell>{renderCell(item, columnKey)}</TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+        <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+          <ModalContent>
+            <ModalHeader>Add New User</ModalHeader>
+            <ModalBody>
+              <Input
+                label="Name"
+                name="name"
+                value={newUser.name}
+                onChange={handleInputChange}
+              />
+              <Input
+                label="Email"
+                name="email"
+                value={newUser.email}
+                onChange={handleInputChange}
+              />
+              <Input
+                label="Role"
+                name="role"
+                value={newUser.role}
+                onChange={handleInputChange}
+              />
+              <Input
+                label="Team"
+                name="team"
+                value={newUser.team}
+                onChange={handleInputChange}
+              />
+              <select
+                name="status"
+                value={newUser.status}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, status: e.target.value })}
+              >
+                <option value="active">Active</option>
+                <option value="paused">Paused</option>
+                <option value="vacation">Vacation</option>
+              </select>
+            </ModalBody>
+            <ModalFooter>
+              <Button color="danger" variant="light" onPress={handleCloseModal}>
+                Cancel
+              </Button>
+              <Button color="primary" onPress={handleSubmit}>
+                Add User
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </div>
     </div>
   );
 }

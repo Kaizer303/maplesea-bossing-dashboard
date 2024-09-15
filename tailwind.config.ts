@@ -10,6 +10,7 @@ export default {
     extend: {
       fontFamily: {
         sans: [
+          "var(--font-geist-sans)",
           '"Inter"',
           "ui-sans-serif",
           "system-ui",
@@ -19,6 +20,7 @@ export default {
           '"Segoe UI Symbol"',
           '"Noto Color Emoji"',
         ],
+        mono: ["var(--font-geist-mono)"],
       },
     },
   },
