@@ -8,6 +8,7 @@ import {
 import type { LinksFunction } from "@remix-run/node";
 
 import "./tailwind.css";
+import { NextUIProvider } from "@nextui-org/react";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -32,9 +33,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {children}
-        <ScrollRestoration />
-        <Scripts />
+        <NextUIProvider>
+          <div className="dark text-foreground bg-background">
+            {children}
+            <ScrollRestoration />
+            <Scripts />
+          </div>
+        </NextUIProvider>
       </body>
     </html>
   );
