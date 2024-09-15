@@ -33,18 +33,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        <NextUIProvider>
-          <div className="dark text-foreground bg-background">
-            {children}
-            <ScrollRestoration />
-            <Scripts />
-          </div>
-        </NextUIProvider>
+        {children}
+        <ScrollRestoration />
+        <Scripts />
       </body>
     </html>
   );
 }
 
 export default function App() {
-  return <Outlet />;
+  return (
+    <NextUIProvider className="dark text-foreground bg-background">
+      <Outlet />
+    </NextUIProvider>
+  );
 }
