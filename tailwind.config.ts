@@ -10,7 +10,7 @@ export default {
     extend: {
       fontFamily: {
         sans: [
-          "var(--font-geist-sans)",
+          "Geist",
           '"Inter"',
           "ui-sans-serif",
           "system-ui",
