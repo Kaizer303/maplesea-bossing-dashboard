@@ -71,14 +71,15 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                 </div>
               </TransitionChild>
               {/* Sidebar component, swap this element with another sidebar if you like */}
-              <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
-                <div className="flex h-16 shrink-0 items-center">
+              <div className="flex grow flex-col overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
+                <Link to="/" className="flex h-24 gap-4 shrink-0 items-center">
                   <img
                     alt="maple icon"
                     src="maplestory_icon.png"
-                    className="h-8 w-auto"
+                    className="h-12 w-auto rounded-full"
                   />
-                </div>
+                  <p className=" text-gray-300 font-semibold">Maple Cash</p>
+                </Link>
                 <nav className="flex flex-1 flex-col">
                   <ul role="list" className="flex flex-1 flex-col gap-y-7">
                     <li>
@@ -129,14 +130,14 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
           {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex grow flex-col overflow-y-auto bg-gray-900 px-6 pb-4">
-            <div className="flex h-24 shrink-0 gap-4 items-center">
+            <Link to="/" className="flex h-24 shrink-0 gap-4 items-center">
               <img
                 alt="maple icon"
                 src="maplestory_icon.png"
                 className="h-12 w-auto rounded-full"
               />
               <p className=" text-gray-300 font-semibold">Maple Cash</p>
-            </div>
+            </Link>
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
                 <li>
@@ -165,8 +166,8 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                   </ul>
                 </li>
                 <li className="mt-auto">
-                  <a
-                    href="#"
+                  <Link
+                    to="/"
                     className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-gray-800 hover:text-white"
                   >
                     <Cog6ToothIcon
@@ -174,7 +175,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
                       className="h-6 w-6 shrink-0"
                     />
                     Settings
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </nav>
