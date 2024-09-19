@@ -43,7 +43,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <NextUIProvider>
+    <NextUIProvider className="dark text-foreground bg-background">
       <Sidebar>
         <Outlet />
       </Sidebar>

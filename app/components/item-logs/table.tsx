@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import {
   Table,
   TableHeader,
@@ -13,30 +13,31 @@ import {
   DropdownMenu,
   DropdownItem,
   Chip,
-  User,
   Pagination,
   Selection,
-  ChipProps,
   SortDescriptor,
 } from "@nextui-org/react";
-import { columns, statusOptions, users } from "public/data";
+import { columns } from "public/data";
 import { VerticalDotsIcon } from "../icons/vertical-dots-icon";
 import { SearchIcon } from "../icons/search-icon";
 import { ChevronDownIcon } from "../icons/chevron-down-icon";
-import { capitalize } from "../services/utils";
+import { capitalize, currencyFormatterr } from "../services/utils";
 import { PlusIcon } from "../icons/plus-icon";
+import { ItemLog, TransactionStatus } from "../services/item-logs.service";
+const INITIAL_VISIBLE_COLUMNS = [
+  "item_name",
+  "final_price",
+  "is_sold",
+  "members",
+  "owner",
+  "price",
+  "price_per_person",
+  "tax",
+  "transaction_status",
+  "actions",
+];
 
-const statusColorMap: Record<string, ChipProps["color"]> = {
-  active: "success",
-  paused: "danger",
-  vacation: "warning",
-};
-
-const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
-
-type User = (typeof users)[0];
-
-export default function App() {
+export default function ItemLogsTable({ itemLogs }: { itemLogs: ItemLog[] }) {
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState<Selection>(
     new Set([])
@@ -57,31 +58,15 @@ export default function App() {
 
   const headerColumns = React.useMemo(() => {
     if (visibleColumns === "all") return columns;
-
     return columns.filter((column) =>
       Array.from(visibleColumns).includes(column.uid)
     );
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
-    let filteredUsers = [...users];
-
-    if (hasSearchFilter) {
-      filteredUsers = filteredUsers.filter((user) =>
-        user.name.toLowerCase().includes(filterValue.toLowerCase())
-      );
-    }
-    if (
-      statusFilter !== "all" &&
-      Array.from(statusFilter).length !== statusOptions.length
-    ) {
-      filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(user.status)
-      );
-    }
-
-    return filteredUsers;
-  }, [users, filterValue, statusFilter]);
+    let filteredlogs = [...itemLogs];
+    return filteredlogs;
+  }, [itemLogs, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -93,70 +78,108 @@ export default function App() {
   }, [page, filteredItems, rowsPerPage]);
 
   const sortedItems = React.useMemo(() => {
-    return [...items].sort((a: User, b: User) => {
-      const first = a[sortDescriptor.column as keyof User] as number;
-      const second = b[sortDescriptor.column as keyof User] as number;
+    return [...items].sort((a: ItemLog, b: ItemLog) => {
+      const first = a[sortDescriptor.column as keyof ItemLog] as number;
+      const second = b[sortDescriptor.column as keyof ItemLog] as number;
       const cmp = first < second ? -1 : first > second ? 1 : 0;
 
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
   }, [sortDescriptor, items]);
 
-  const renderCell = React.useCallback((user: User, columnKey: React.Key) => {
-    const cellValue = user[columnKey as keyof User];
+  const renderCell = React.useCallback(
+    (item: ItemLog, columnKey: React.Key): ReactNode => {
+      const cellValue = item[columnKey as keyof ItemLog];
 
-    switch (columnKey) {
-      case "name":
-        return (
-          <User
-            avatarProps={{ radius: "lg", src: user.avatar }}
-            description={user.email}
-            name={cellValue}
-          >
-            {user.email}
-          </User>
-        );
-      case "role":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-small capitalize">{cellValue}</p>
-            <p className="text-bold text-tiny capitalize text-default-400">
-              {user.team}
-            </p>
-          </div>
-        );
-      case "status":
-        return (
-          <Chip
-            className="capitalize"
-            color={statusColorMap[user.status]}
-            size="sm"
-            variant="flat"
-          >
-            {cellValue}
-          </Chip>
-        );
-      case "actions":
-        return (
-          <div className="relative flex justify-end items-center gap-2">
-            <Dropdown>
-              <DropdownTrigger>
-                <Button isIconOnly size="sm" variant="light">
-                  <VerticalDotsIcon className="text-default-300" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu>
-                <DropdownItem>View</DropdownItem>
-                <DropdownItem>Edit</DropdownItem>
-                <DropdownItem>Delete</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-        );
-      default:
-        return cellValue;
-    }
-  }, []);
+      switch (columnKey) {
+        case "final_price":
+          return (
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold">
+                {currencyFormatterr(cellValue as number)}
+              </span>
+            </div>
+          );
+        case "price":
+          return (
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold">
+                {currencyFormatterr(cellValue as number)}
+              </span>
+            </div>
+          );
+        case "price_per_person":
+          return (
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold">
+                {currencyFormatterr(cellValue as number)}
+              </span>
+            </div>
+          );
+        case "tax":
+          return (
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-semibold">
+                {currencyFormatterr(cellValue as number)}
+              </span>
+            </div>
+          );
+        case "transaction_status":
+          const transactionStatus: TransactionStatus[] =
+            cellValue as TransactionStatus[];
+          if (transactionStatus && transactionStatus.length) {
+            return transactionStatus.map((status) => {
+              return (
+                <Chip
+                  key={status.member}
+                  color={status.is_paid ? "success" : "danger"}
+                  variant="flat"
+                >
+                  {status.member}
+                </Chip>
+              );
+            });
+          } else "";
+        case "is_sold":
+          // return chip with yes and no
+          return (
+            <Chip
+              color={cellValue ? "success" : "danger"}
+              variant="flat"
+              className="capitalize"
+            >
+              {cellValue ? "yes" : "no"}
+            </Chip>
+          );
+        case "members":
+          return (cellValue as string[]).join(", ");
+        case "actions":
+          return (
+            <div className="relative flex justify-end items-center gap-2">
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button isIconOnly size="sm" variant="light">
+                    <VerticalDotsIcon className="text-default-300" />
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu>
+                  <DropdownItem>View</DropdownItem>
+                  <DropdownItem>Edit</DropdownItem>
+                  <DropdownItem>Delete</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
+          );
+        default:
+          if (cellValue instanceof Array) {
+            return "";
+          } else {
+            return cellValue;
+          }
+      }
+    },
+    []
+  );
 
   const onNextPage = React.useCallback(() => {
     if (page < pages) {
@@ -212,30 +235,6 @@ export default function App() {
                   endContent={<ChevronDownIcon className="text-small" />}
                   variant="flat"
                 >
-                  Status
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Table Columns"
-                closeOnSelect={false}
-                selectedKeys={statusFilter}
-                selectionMode="multiple"
-                onSelectionChange={setStatusFilter}
-              >
-                {statusOptions.map((status) => (
-                  <DropdownItem key={status.uid} className="capitalize">
-                    {capitalize(status.name)}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-            <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
-                <Button
-                  endContent={<ChevronDownIcon className="text-small" />}
-                  variant="flat"
-                >
                   Columns
                 </Button>
               </DropdownTrigger>
@@ -261,7 +260,7 @@ export default function App() {
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
-            Total {users.length} users
+            Total {itemLogs.length} items
           </span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
@@ -283,7 +282,7 @@ export default function App() {
     visibleColumns,
     onSearchChange,
     onRowsPerPageChange,
-    users.length,
+    itemLogs.length,
     hasSearchFilter,
   ]);
 
